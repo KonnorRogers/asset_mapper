@@ -5,7 +5,7 @@ Given a JSON file matching its schema, reads the file into
 memory and then provides a logical mapping of the hashed
 file.
 
-**Warning**
+## Warning
 
 AssetMapper is still a work in progress. It
 is not yet released or stable. The below is essentially an
