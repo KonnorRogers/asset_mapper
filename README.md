@@ -1,28 +1,82 @@
 # AssetMapper
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/asset_mapper`. To experiment with that code, run `bin/console` for an interactive prompt.
+AssetMapper is a base level class who's job is simple.
+Given a JSON file matching its schema, reads the file into
+memory and then provides a logical mapping of the hashed
+file.
 
-TODO: Delete this and the text above, and describe your gem
+## Why?
 
-## Installation
+AssetMapper is built on the belief that your bundler
+of choice IE: Parcel, Webpack, Rollup, ESBuild, Vite, etc
+all know how to handle your files. AssetMapper acts as a
+bridge between frontend and backend.
 
-Add this line to your application's Gemfile:
+## How does AssetMapper work?
 
-```ruby
-gem 'asset_mapper'
+AssetMapper expects to be given a path to a JSON file that
+is in a specific schema. To generate these schemas,
+generally a plugin needs to be made for your bundler of
+choice that complies with the AssetMapper schema. Then, for
+your framework of choice you create or find a rubygem that
+uses AssetMapper under the hood and can then compose view
+layer helpers for referencing asset files.
+
+## Why not Propshaft?
+
+Propshaft is good. It's also Rails specific. It also does
+more than I would like it to. It does things like:
+
+- [Remap CSS asset URLS](https://github.com/rails/propshaft/blob/main/lib/propshaft/compilers/css_asset_urls.rb)
+- [Remaps sourcemap URLS](https://github.com/rails/propshaft/blob/main/lib/propshaft/compilers/source_mapping_urls.rb)
+- [Expects to be able to get a logical path from a filename](https://github.com/rails/propshaft/blob/bef8a9a500e66215dcc87d8752869a99a10cd9e1/lib/propshaft/asset.rb#L31)
+
+## Roadmap
+
+- [ ] - Create a pluggable DevServer thats Rack compatible
+that can be injected as middleware.
+- [ ] - Create a gem and plugin for Parcel 2.
+- [ ] - Create a gem and plugin for Vite.
+- [ ] - Create a gem and plugin for ESBuild.
+
+## For Developers
+
+If you're interested in making a plugin for a bundler that is AssetMapper compatible
+here is the JSON schema expected:
+
+```json
+{
+  "entrypoints": {
+    "path/before/transform.js": "path/after/transform.js"
+  },
+  "path/before/transform.js": "path/after/transform.js"
+}
 ```
 
-And then execute:
+## Programmatic Usage
 
-    $ bundle install
+```rb
+AssetMapper.configure do |config|
+  config.manifest_path = "public/asset_manifest.json"
+  config.assets_path = "public/assets"
+  config.entrypoints_path = "#{config.asset_path}/entrypoints"
+end
 
-Or install it yourself as:
+manifest = AssetMapper.manifest
+# =>
+#   {
+#     "entrypoints" => {
+#        "public/assets/entrypoints/application.js" => "public/assets/entrypoints/application.123.js"
+#     },
+#     "public/assets/icon.svg" => "public/assets/icon.123.svg"
+#   }
 
-    $ gem install asset_mapper
+manifest.find_entrypoint("application.js")
+# => "public/assets/entrypoints/application.123.js"
 
-## Usage
-
-TODO: Write usage instructions here
+manifest.find("icon.svg")
+# => "public/assets/icon.123.svg"
+```
 
 ## Development
 
@@ -32,7 +86,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/asset_mapper. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/asset_mapper/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/paramagicdev/asset_mapper. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/paramagicdev/asset_mapper/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +94,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the AssetMapper project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/asset_mapper/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the AssetMapper project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/paramagicdev/asset_mapper/blob/main/CODE_OF_CONDUCT.md).
