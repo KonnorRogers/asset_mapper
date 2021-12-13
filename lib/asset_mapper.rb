@@ -5,28 +5,29 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup # ready!
 
 require "dry/configurable"
+require "forwardable"
 
+# @example
+#
+#   AssetMapper.configure do |config|
+#     config.manifest_files = "public/asset_manifest.json"
+#     config.assets_path = "/assets"
+#     config.entrypoints_path = "#{config.asset_path}/entrypoints"
+#     config.asset_host = "/"
+#   end
 module AssetMapper
-  # Your code goes here...
+  extend ::Forwardable
   extend ::Dry::Configurable
-  extend self
 
-  setting :files, reader: true
-  setting :output_path, reader: true
+  # Where to find the json mapping of your asset files.
+  setting :manifest_files
 
-  # For file.1234.ext
-  # if using file-1234.ext change to: /\.[\d\w]+\./
-  setting :fingerprint_regexp, default: /\-[\d\w]+\./, reader: true
-  setting :fingerprint_replacer, default: ".", reader: true
+  # In case you server off of a CDN, you may want to prepend urls.
+  setting :asset_host, "/"
 
-  def generate_mapping
-    hash = {}
+  def_delegators :manifest, :find_entrypoint, :find_asset
 
-    files.map do |file|
-      file_without_fingerprint = file.gsub(fingerprint_regexp, fingerprint_replacer)
-      hash[file_without_fingerprint] = file
-    end
-
-    hash
+  def self.manifest
+    @manifest ||= Manifest.new(self)
   end
 end

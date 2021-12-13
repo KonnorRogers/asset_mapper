@@ -20,7 +20,7 @@ bridge between frontend and backend.
 
 ## How does AssetMapper work?
 
-AssetMapper expects to be given a path to a JSON file that
+AssetMapper expects to be given a path to a JSON file(s) that
 is in a specific schema. To generate these schemas,
 generally a plugin needs to be made for your bundler of
 choice that complies with the AssetMapper schema. Then, for
@@ -50,12 +50,23 @@ that can be injected as middleware.
 If you're interested in making a plugin for a bundler that is AssetMapper compatible
 here is the JSON schema expected:
 
+### Schema
+
+Entrypoints are a special mapping that helps to provide a
+better developer experience.
+
+Every other file should just be top-level.
+
+Example:
+
 ```json
 {
   "entrypoints": {
-    "path/before/transform.js": "path/after/transform.js"
+    "/path/before/transform.js": "path/after/transform.js"
   },
-  "path/before/transform.js": "path/after/transform.js"
+  "assets": {
+    "/path/before/transform.js": "path/after/transform.js"
+  }
 }
 ```
 
@@ -63,25 +74,27 @@ here is the JSON schema expected:
 
 ```rb
 AssetMapper.configure do |config|
-  config.manifest_path = "public/asset_manifest.json"
-  config.assets_path = "public/assets"
-  config.entrypoints_path = "#{config.asset_path}/entrypoints"
+  # Where the manifest files can be found on the host machine
+  config.manifest_files  ["public/asset_manifest.json"]
+  config.asset_host = "/"
 end
 
 manifest = AssetMapper.manifest
 # =>
 #   {
 #     "entrypoints" => {
-#        "public/assets/entrypoints/application.js" => "public/assets/entrypoints/application.123.js"
+#        "assets/entrypoints/application.js" => "assets/entrypoints/application.123.js"
 #     },
-#     "public/assets/icon.svg" => "public/assets/icon.123.svg"
+#     "files" => {
+#       "assets/icon.svg" => "assets/icon.123.svg"
+#     }
 #   }
 
 manifest.find_entrypoint("application.js")
-# => "public/assets/entrypoints/application.123.js"
+# => "/assets/entrypoints/application.123.js"
 
-manifest.find("icon.svg")
-# => "public/assets/icon.123.svg"
+manifest.find_asset("icon.svg")
+# => "/assets/icon.123.svg"
 ```
 
 ## Development
