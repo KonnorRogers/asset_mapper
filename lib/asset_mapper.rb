@@ -23,7 +23,7 @@ module AssetMapper
   # In case you server off of a CDN, you may want to prepend urls.
   setting :asset_host, default: "/"
 
-  def_delegators :manifest, :find_entrypoint, :find_asset
+  def_delegators :manifest, :find
 
   def self.manifest
     @manifest ||= Manifest.new(self)
