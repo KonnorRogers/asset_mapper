@@ -21,7 +21,7 @@ module AssetMapper
   setting :manifest_files
 
   # In case you server off of a CDN, you may want to prepend urls.
-  setting :asset_host, "/"
+  setting :asset_host, default: "/"
 
   def_delegators :manifest, :find_entrypoint, :find_asset
 
