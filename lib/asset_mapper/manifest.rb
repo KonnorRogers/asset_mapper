@@ -8,14 +8,11 @@ module AssetMapper
 
     param :config
 
-    # Find anything located in the "entrypoints" key of the JSON file.
-    def find_entrypoint(str)
-      manifest.fetch("entrypoints").fetch(str)
-    end
-
-    # Find anything located in the "assets" portion of the JSON file.
-    def find_asset(str)
-      manifest.fetch("assets").fetch(str)
+    # Find any asset.
+    def find(file_name)
+      manifest.fetch(file_name)
+    rescue KeyError
+      $stdout.puts "Unable to find #{file_name} in your manifest files."
     end
 
     # Returns a cached copy of the manifest.

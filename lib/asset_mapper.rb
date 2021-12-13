@@ -11,8 +11,6 @@ require "forwardable"
 #
 #   AssetMapper.configure do |config|
 #     config.manifest_files = "public/asset_manifest.json"
-#     config.assets_path = "/assets"
-#     config.entrypoints_path = "#{config.asset_path}/entrypoints"
 #     config.asset_host = "/"
 #   end
 module AssetMapper

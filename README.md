@@ -61,12 +61,8 @@ Example:
 
 ```json
 {
-  "entrypoints": {
-    "/path/before/transform.js": "path/after/transform.js"
-  },
-  "assets": {
-    "/path/before/transform.js": "path/after/transform.js"
-  }
+  "/path/before/asset-1.js": "path/after/asset-1.js"
+  "/path/before/asset-2.js": "path/after/asset-2.js"
 }
 ```
 
@@ -75,27 +71,27 @@ Example:
 ```rb
 AssetMapper.configure do |config|
   # Where the manifest files can be found on the host machine
-  config.manifest_files  ["public/asset_manifest.json"]
+  config.manifest_files = ["public/asset_manifest.json"]
   config.asset_host = "/"
 end
 
 manifest = AssetMapper.manifest
 # =>
 #   {
-#     "entrypoints" => {
-#        "assets/entrypoints/application.js" => "assets/entrypoints/application.123.js"
-#     },
-#     "files" => {
-#       "assets/icon.svg" => "assets/icon.123.svg"
-#     }
+#     "assets/entrypoints/application.js" => "assets/entrypoints/application.123.js"
+#     "assets/icon.svg" => "assets/icon.123.svg"
 #   }
 
-manifest.find_entrypoint("application.js")
+manifest.find("entrypoints/application.js")
 # => "/assets/entrypoints/application.123.js"
 
-manifest.find_asset("icon.svg")
+manifest.find("icon.svg")
 # => "/assets/icon.123.svg"
 ```
+
+## Supported bundlers
+
+- [Parcel](/docs/parcel2)
 
 ## Development
 
