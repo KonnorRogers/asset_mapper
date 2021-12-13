@@ -16,6 +16,7 @@ require "forwardable"
 module AssetMapper
   extend ::Forwardable
   extend ::Dry::Configurable
+  extend self
 
   # Where to find the json mapping of your asset files.
   setting :manifest_files
@@ -25,7 +26,7 @@ module AssetMapper
 
   def_delegators :manifest, :find
 
-  def self.manifest
-    @manifest ||= Manifest.new(self)
+  def manifest
+    @manifest ||= Manifest.new(config)
   end
 end
