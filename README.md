@@ -92,6 +92,10 @@ manifest.find("icon.svg")
 ## Supported bundlers
 
 - [Parcel](/docs/parcel2)
+- [Rollup](/docs/rollup)
+- [Vite](/docs/vite/)
+
+## Unsupported Bundlers
 
 ## Development
 
