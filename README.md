@@ -97,6 +97,8 @@ manifest.find("icon.svg")
 
 ## Unsupported Bundlers
 
+- [ESBuild](https://github.com/evanw/esbuild/issues/1213)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
