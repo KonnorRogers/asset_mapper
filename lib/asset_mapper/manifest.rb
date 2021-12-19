@@ -17,7 +17,9 @@ module AssetMapper
 
     # Returns a cached copy of the manifest.
     def manifest
-      @manifest ||= load_manifest
+      # We will need to think about saving a hash of the manifest file to determine a refresh.
+      # @manifest ||= load_manifest
+      @manifest = load_manifest
     end
 
     # Refreshes the cached mappings by reading the updated manifest files.
