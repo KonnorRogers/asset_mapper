@@ -12,11 +12,11 @@ require "forwardable"
 #   AssetMapper.configure do |config|
 #     config.manifest_files = "public/asset_manifest.json"
 #     config.asset_host = "/"
+#     config.cache_manifest = Rails.env.development? || Rails.env.test?
 #   end
 module AssetMapper
   extend ::Forwardable
   extend ::Dry::Configurable
-  extend self
 
   # Where to find the json mapping of your asset files.
   setting :manifest_files
@@ -24,9 +24,11 @@ module AssetMapper
   # In case you server off of a CDN, you may want to prepend urls.
   setting :asset_host, default: "/"
 
+  setting :cache_manifest, type: ->(v) { !!v }
+
   def_delegators :manifest, :find
 
-  def manifest
+  def self.manifest
     @manifest ||= Manifest.new(config)
   end
 end

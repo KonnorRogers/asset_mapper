@@ -15,11 +15,12 @@ module AssetMapper
       $stdout.puts "Unable to find #{file_name} in your manifest files."
     end
 
-    # Returns a cached copy of the manifest.
+    # Returns a cached copy of the manifest only if cache_manifest is true.
     def manifest
-      # We will need to think about saving a hash of the manifest file to determine a refresh.
-      # @manifest ||= load_manifest
-      @manifest = load_manifest
+      # Always reload the manifest. Useful for development / testing.
+      return load_manifest if config.cache_manifest == false
+
+      @manifest ||= load_manifest
     end
 
     # Refreshes the cached mappings by reading the updated manifest files.

@@ -73,6 +73,9 @@ AssetMapper.configure do |config|
   # Where the manifest files can be found on the host machine
   config.manifest_files = ["public/asset_manifest.json"]
   config.asset_host = "/"
+
+  # Do not cache the manifest in testing or in development.
+  config.cache_manifest = !(Rails.env.development? || Rails.env.testing?)
 end
 
 manifest = AssetMapper.manifest
@@ -91,13 +94,10 @@ manifest.find("icon.svg")
 
 ## Supported bundlers
 
+- [ESBuild](/docs/esbuild)
 - [Parcel](/docs/parcel2)
 - [Rollup](/docs/rollup)
 - [Vite](/docs/vite/)
-
-## Unsupported Bundlers
-
-- [ESBuild](https://github.com/evanw/esbuild/issues/1213)
 
 ## Development
 
