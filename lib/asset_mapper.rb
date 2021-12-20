@@ -25,7 +25,7 @@ module AssetMapper
   # In case you server off of a CDN, you may want to prepend urls.
   setting :asset_host, default: "/"
 
-  setting(:cache_manifest) { |value| !!value }
+  setting :cache_manifest, constructor: proc { |value| !!value }
 
   def_delegators :manifest, :find
 
