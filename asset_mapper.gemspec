@@ -32,8 +32,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "rake", ">= 10"
   spec.add_runtime_dependency "zeitwerk", "~> 2.5"
-  spec.add_runtime_dependency "dry-configurable", "~> 0.13.0"
-  spec.add_runtime_dependency "dry-files", "~> 0.1.0"
+  spec.add_runtime_dependency "dry-configurable", "~> 0.13"
+  spec.add_runtime_dependency "dry-files", "~> 0.1"
   spec.add_runtime_dependency "dry-initializer", "~> 3.0"
   spec.add_runtime_dependency "dry-types", "~> 1.5"
 end

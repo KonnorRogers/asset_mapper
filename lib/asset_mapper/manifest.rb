@@ -8,11 +8,11 @@ module AssetMapper
 
     param :config
 
-    # Find any asset.
+    # Attempt to find the +file_name+ inside of the manifest, fallback to given filename.
+    # @param {String} - The filename to find in the manifest.
+    # @return {String}
     def find(file_name)
-      manifest.fetch(file_name)
-    rescue KeyError
-      $stdout.puts "Unable to find #{file_name} in your manifest files."
+      manifest.fetch(file_name, file_name)
     end
 
     # Returns a cached copy of the manifest only if cache_manifest is true.
