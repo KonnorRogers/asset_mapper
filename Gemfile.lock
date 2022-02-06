@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     asset_mapper (0.0.1)
-      dry-configurable (~> 0.13.0)
-      dry-files (~> 0.1.0)
+      dry-configurable (~> 0.13)
+      dry-files (~> 0.1)
       dry-initializer (~> 3.0)
       dry-types (~> 1.5)
       rake (>= 10)
