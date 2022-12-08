@@ -8,10 +8,14 @@ module AssetMapper
 
     param :config
 
+    class FileNotFoundError < StandardError; end
+
     # Attempt to find the +file_name+ inside of the manifest, fallback to given filename.
     # @param {String} - The filename to find in the manifest.
     # @return {String}
     def find(file_name)
+      raise FileNotFoundError("#{file_name} not found.") if config.raise_on_missing_file
+
       manifest.fetch(file_name, file_name)
     end
 

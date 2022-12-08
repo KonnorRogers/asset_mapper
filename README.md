@@ -39,11 +39,11 @@ more than I would like it to. It does things like:
 
 ## Roadmap
 
-- [ ] - Create a pluggable DevServer thats Rack compatible
-that can be injected as middleware.
-- [ ] - Create a gem and plugin for Parcel 2.
-- [ ] - Create a gem and plugin for Vite.
-- [ ] - Create a gem and plugin for ESBuild.
+- [ ] - Create a plugin for ESBuild.
+- [ ] - Create a plugin for Parcel 2.
+- [ ] - Create a plugin for Vite.
+- [ ] - Create a pluggable DevServer thats Rack compatible that can be injected as middleware.
+- [ ] - Create Rails view helpers.
 
 ## For Developers
 
@@ -52,10 +52,14 @@ here is the JSON schema expected:
 
 ### Schema
 
-Entrypoints are a special mapping that helps to provide a
-better developer experience.
+The schema is super simple. It just path before transform, and path after transform.
 
-Every other file should just be top-level.
+```json
+{
+  // Before  // After
+  <string>: <string>
+}
+```
 
 Example:
 
