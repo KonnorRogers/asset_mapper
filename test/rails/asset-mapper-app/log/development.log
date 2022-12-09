@@ -1,0 +1,25 @@
+Started GET "/" for 127.0.0.1 at 2022-12-08 18:27:47 -0500
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/konnorrogers/.asdf/installs/ruby/3.1.2/lib/ruby/gems/3.1.0/gems/railties-7.0.4/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/konnorrogers/.asdf/installs/ruby/3.1.2/lib/ruby/gems/3.1.0/gems/railties-7.0.4/lib/rails/templates/rails/welcome/index.html.erb (Duration: 1.0ms | Allocations: 585)
+Completed 200 OK in 8ms (Views: 3.6ms | ActiveRecord: 0.0ms | Allocations: 4578)
+
+
+Started GET "/" for 127.0.0.1 at 2022-12-08 18:28:26 -0500
+Processing by HomeController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.2ms | Allocations: 110)
+  Rendered layout layouts/application.html.erb (Duration: 101.6ms | Allocations: 65133)
+Completed 200 OK in 103ms (Views: 102.8ms | Allocations: 66100)
+
+
+Started GET "/" for 127.0.0.1 at 2022-12-08 18:29:31 -0500
+Processing by HomeController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 0.1ms | Allocations: 7)
+  Rendered layout layouts/application.html.erb (Duration: 5.0ms | Allocations: 1974)
+Completed 200 OK in 6ms (Views: 5.8ms | Allocations: 2230)
+
+
