@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../app/javascript/app.css"],
-  "sourcesContent": ["div { color: red; }\n"],
-  "mappings": ";AAAA;AAAM;AAAA;",
-  "names": []
-}
