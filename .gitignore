@@ -167,3 +167,4 @@ docs/public
 # nodenv version file
 .node-version
 .pnpm-lock.yaml
+public/esbuild-esbuilds

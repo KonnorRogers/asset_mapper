@@ -1,6 +1,0 @@
-{
-  "application.js": "esbuild-builds/application-IJJUA7FS.js",
-  "application.css": "esbuild-builds/application-BYCE2EFI.css",
-  "../../node_modules/@rails/actioncable/src/index.js": "esbuild-builds/chunks/src-HHIIB5PZ.js",
-  "assets/academic-cap.svg": "esbuild-builds/chunks/academic-cap-KFOUOWNQ.js"
-}
