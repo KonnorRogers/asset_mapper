@@ -167,5 +167,5 @@ docs/public
 # nodenv version file
 .node-version
 .pnpm-lock.yaml
-test/rails/asset-mapper-app/public/esbuild-esbuilds
+test/rails/asset-mapper-app/public/esbuild-builds
 
