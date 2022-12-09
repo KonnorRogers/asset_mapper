@@ -63,16 +63,44 @@ function AssetMapperManifest(options = {}) {
         for (const hashedPath in result.metafile.outputs) {
           const output = result.metafile.outputs[hashedPath];
 
+
           if (!output.entryPoint) {
             continue;
           }
 
-          // Replace the relative path. We don't need "/public"
           const entryPoint = output.entryPoint;
 
+					let finalPath = hashedPath
+
+
+					// Theres probably better ways to do this, but basically if we import an SVG
+					// its final location will be: "thing.svg -> thing-[hash].js", this goes back through
+					// the outputs and finds the correct SVG.
+					const loader = build.initialOptions.loader || {}
+					const { ext } = path.parse(entryPoint)
+
+					const isExternalFile = loader[ext] === "file"
+
+					if (isExternalFile) {
+						for (const key in result.metafile.outputs) {
+							const val = result.metafile.outputs[key]
+							const inputs = Object.keys(val.inputs)
+
+							if (inputs.length !== 1) continue
+
+							const asset = inputs[0]
+							if (asset === entryPoint) {
+								finalPath = key
+								break
+							}
+						}
+					}
+
+
+          // Replace the relative paths. We don't need "/public" or "app/javascript"
           manifest.set(
             path.relative(entrypointRoot, entryPoint),
-            path.relative(outputRoot, hashedPath)
+            path.relative(outputRoot, finalPath)
           );
 
           if (!output.cssBundle) continue;
@@ -119,8 +147,8 @@ function AssetMapperManifest(options = {}) {
       ".gif": "file",
       ".avif": "file",
       ".avi": "file",
-      ".json": "file",
     },
+    outbase: "app/javascript",
     metafile: true,
     outdir: path.join(process.cwd(), "public/esbuild-builds"),
     plugins: [AssetMapperManifest()],
