@@ -10,8 +10,8 @@ require "forwardable"
 # @example
 #
 #   AssetMapper.configure do |config|
-#     config.manifest_files = "public/asset_manifest.json"
-#     config.asset_host = "/"
+#     config.asset_host = "/builds"
+#     config.manifest_files = "public/builds/asset_manifest.json"
 #     config.cache_manifest = Rails.env.development? || Rails.env.test?
 #     config.raise_on_missing_file = Rails.env.development? || Rails.env.test?
 #   end

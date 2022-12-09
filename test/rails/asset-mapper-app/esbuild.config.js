@@ -14,7 +14,7 @@ const fs = fsLib.promises;
 function AssetMapperManifest(options = {}) {
   if (options == null) options = {};
 
-  const { outputRoot = "public", entrypointRoot = "app/javascript" } = options;
+  let { outputRoot, entrypointRoot = "app/javascript" } = options;
 
   return {
     name: "asset-mapper-manifest",
@@ -22,9 +22,13 @@ function AssetMapperManifest(options = {}) {
     setup(build) {
       build.initialOptions.metafile = true;
 
+  		if (!outputRoot) {
+  			outputRoot = path.relative(process.cwd(), build.initialOptions.outdir || "")
+  		}
+
       // assume that the user wants to hash their files by default,
       // but don't override any hashing format they may have already set.
-      ["entryNames", "assetNames", "chunkNames"].forEach((str) => {
+      ;["entryNames", "assetNames", "chunkNames"].forEach((str) => {
         if (build.initialOptions[str]) return;
 
         if (str === "chunkNames") {
@@ -76,6 +80,7 @@ function AssetMapperManifest(options = {}) {
 					// Theres probably better ways to do this, but basically if we import an SVG
 					// its final location will be: "thing.svg -> thing-[hash].js", this goes back through
 					// the outputs and finds the correct SVG.
+					// https://github.com/evanw/esbuild/issues/2731
 					const loader = build.initialOptions.loader || {}
 					const { ext } = path.parse(entryPoint)
 
@@ -148,8 +153,6 @@ function AssetMapperManifest(options = {}) {
       ".avif": "file",
       ".avi": "file",
     },
-    outbase: "app/javascript",
-    metafile: true,
     outdir: path.join(process.cwd(), "public/esbuild-builds"),
     plugins: [AssetMapperManifest()],
   });

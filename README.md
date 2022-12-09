@@ -56,8 +56,7 @@ The schema is super simple. It just path before transform, and path after transf
 
 ```json
 {
-  // Before  // After
-  <string>: <string>
+  "<unhashed-path>": "<hashed-path>"
 }
 ```
 
@@ -75,8 +74,10 @@ Example:
 ```rb
 AssetMapper.configure do |config|
   # Where the manifest files can be found on the host machine
-  config.manifest_files = ["public/asset_manifest.json"]
-  config.asset_host = "/"
+  config.manifest_files = ["public/builds/asset-mapper-manifest.json"]
+
+  # The URL or path prefix for the files.
+  config.asset_host = "/builds"
 
   # Do not cache the manifest in testing or in development.
   config.cache_manifest = !(Rails.env.development? || Rails.env.testing?)
@@ -85,15 +86,15 @@ end
 manifest = AssetMapper.manifest
 # =>
 #   {
-#     "assets/entrypoints/application.js" => "assets/entrypoints/application.123.js"
-#     "assets/icon.svg" => "assets/icon.123.svg"
+#     "entrypoints/application.js" => "entrypoints/application-[hash].js"
+#     "assets/icon.svg" => "assets/icon-[hash].svg"
 #   }
 
 manifest.find("entrypoints/application.js")
-# => "/assets/entrypoints/application.123.js"
+# => "/builds/entrypoints/application-[hash].js"
 
-manifest.find("icon.svg")
-# => "/assets/icon.123.svg"
+manifest.find("assets/icon.svg")
+# => "/builds/assets/icon-[hash].svg"
 ```
 
 ## Supported bundlers
