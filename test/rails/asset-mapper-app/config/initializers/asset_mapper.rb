@@ -1,6 +1,6 @@
-AssetMapper.configure do ||
+AssetMapper.configure do |config|
   # Where the manifest files can be found on the host machine
-  config.manifest_files = ["public/asset_manifest.json"]
+  config.manifest_files = ["public/esbuild-builds/asset-mapper-manifest.json"]
   config.asset_host = "/"
 
   # Do not cache the manifest in testing or in development.

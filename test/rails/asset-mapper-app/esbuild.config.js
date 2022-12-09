@@ -1,5 +1,6 @@
 // esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets
 // @ts-check
+
 //
 /** @typedef BuildResult import("esbuild").BuildResult  */
 (async () => {
@@ -18,9 +19,16 @@
 
       // assume that the user wants to hash their files by default,
       // but don't override any hashing format they may have already set.
-      if (!build.initialOptions.entryNames) {
-        build.initialOptions.entryNames = "[dir]/[name]-[hash]";
-      }
+      ["entryNames", "assetNames", "chunkNames"].forEach((str) => {
+      	if (build.initialOptions[str]) return
+
+				if (str === "chunkNames") {
+					build.initialOptions[str] = "chunks/[name]-[hash]"
+					return
+				}
+
+				build.initialOptions[str] = "[dir]/[name]-[hash]"
+      })
 
       build.onEnd(async (result) => {
         if (!result.metafile) {
@@ -33,9 +41,14 @@
           return
         }
 
-        console.log(result.metafile)
         /** @type Map<string, string> */
         const manifest = new Map();
+
+				const outfileDir = build.initialOptions.outfile ? build.initialOptions.outfile : null
+        const outdir = build.initialOptions.outdir || outfileDir || process.cwd()
+
+				const outputRoot = "public/"
+				const entrypointRoot = "app/javascript/"
 
         // Let's loop through all the various outputs
         for (const hashedPath in result.metafile.outputs) {
@@ -45,25 +58,21 @@
             continue
           }
 
-          manifest.set(output.entryPoint, hashedPath)
+					// Replace the relative path. We don't need "/public"
+					const entryPoint = output.entryPoint
 
-          if (output.cssBundle) {
-            path.dirname(output.cssBundle
-            manifest.set(output.entryPoint, output.cssBundle)
-          }
-        }
+          manifest.set(path.relative(entrypointRoot, entryPoint), path.relative(outputRoot, hashedPath))
 
-        let outdir = process.cwd()
+          if (!output.cssBundle) continue
 
-        if (build.initialOptions.outfile) {
-          outdir = path.dirname(build.initialOptions.outfile)
-        } else if (build.initialOptions.outdir) {
-          outdir = build.initialOptions.outdir
+					const { dir, name } = path.parse(entryPoint)
+          const cssBundle = path.join(dir, name + ".css")
+          manifest.set(path.relative(entrypointRoot, cssBundle), path.relative(outputRoot, output.cssBundle))
         }
 
         const manifestFolder = path.resolve(outdir)
         await fs.mkdir(manifestFolder, { recursive: true })
-        await fs.writeFile(path.join(manifestFolder, "asset-mapper-manifest.json"), JSON.stringify(manifest))
+        await fs.writeFile(path.join(manifestFolder, "asset-mapper-manifest.json"), JSON.stringify(Object.fromEntries(manifest), null, 2))
       });
     },
   };
@@ -92,7 +101,8 @@
       ".json": "file",
     },
     metafile: true,
-    absWorkingDir: process.cwd(),
+    // absWorkingDir: process.cwd(),
+    assetNames: "[dir]",
     outdir: path.join(process.cwd(), "public/esbuild-builds"),
     plugins: [plugin],
   });

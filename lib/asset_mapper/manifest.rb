@@ -11,12 +11,22 @@ module AssetMapper
     class FileNotFoundError < StandardError; end
 
     # Attempt to find the +file_name+ inside of the manifest, fallback to given filename.
-    # @param {String} - The filename to find in the manifest.
+    # @param {String} file_name - The filename to find in the manifest.
+    # @param {Boolean} prepend_asset_host - Whether or not to add the asset_host. Usually "/"
     # @return {String}
-    def find(file_name)
-      raise FileNotFoundError("#{file_name} not found.") if config.raise_on_missing_file
+    def find(file_name, prepend_asset_host: true)
+      file = manifest[file_name]
 
-      manifest.fetch(file_name, file_name)
+      if file.nil?
+        raise FileNotFoundError("Unable to find #{filename} in your manifest[s].") if config.raise_on_missing_file
+
+        # Fall back to the default filename, perhaps it exists....
+        file = file_name
+      end
+
+      return with_asset_host(asset_host: config.asset_host, file: file) if prepend_asset_host
+
+      file
     end
 
     # Returns a cached copy of the manifest only if cache_manifest is true.
@@ -35,8 +45,19 @@ module AssetMapper
 
     private
 
+    def with_asset_host(asset_host:, file:)
+      # strip leading "/"
+      file = file[(1..-1)] if file.starts_with?("/")
+
+      asset_host += "/" unless asset_host.ends_with?("/")
+
+      asset_host + file
+    end
+
     def load_manifest
-      config.manifest_files.map { |path| JSON.parse(Dry::Files.new.read(path)) }.inject({}, &:merge)
+      hash = {}
+      config.manifest_files.each { |path| hash.merge!(JSON.parse(Dry::Files.new.read(path))) }
+      hash
     end
   end
 end
