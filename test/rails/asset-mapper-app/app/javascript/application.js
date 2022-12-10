@@ -2,4 +2,3 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 import "./app.css"
-import("./assets/academic-cap.svg")

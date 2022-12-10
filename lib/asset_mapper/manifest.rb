@@ -47,9 +47,9 @@ module AssetMapper
 
     def with_asset_host(asset_host:, file:)
       # strip leading "/"
-      file = file[(1..-1)] if file.starts_with?("/")
+      file = file[(1..-1)] if file.start_with?("/")
 
-      asset_host += "/" unless asset_host.ends_with?("/")
+      asset_host += "/" unless asset_host.end_with?("/")
 
       asset_host + file
     end

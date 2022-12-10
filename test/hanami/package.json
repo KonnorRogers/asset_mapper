@@ -1,0 +1,19 @@
+{
+  "name": "bookshelf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "app/assets/javascript/application.js",
+  "scripts": {
+    "build": "node esbuild.config.js"
+  },
+  "keywords": [],
+  "author": "Konnor Rogers",
+  "license": "MIT",
+  "dependencies": {
+    "esbuild": "^0.16.4"
+  },
+  "devDependencies": {
+    "glob": "^8.0.3"
+  }
+}

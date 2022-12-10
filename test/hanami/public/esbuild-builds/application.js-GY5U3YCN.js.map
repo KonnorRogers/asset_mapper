@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../app/assets/javascript/entrypoints/application.js"],
+  "sourcesContent": ["console.log(\"hi\")\n"],
+  "mappings": ";AAAA,QAAQ,IAAI,IAAI;",
+  "names": []
+}
