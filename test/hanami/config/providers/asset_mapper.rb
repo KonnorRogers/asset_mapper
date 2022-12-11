@@ -13,8 +13,8 @@ Hanami.app.register_provider(:asset_mapper) do
       # The URL or path prefix for the files.
       config.asset_host = "/esbuild-builds"
 
-      # Do not cache the manifest in testing or in development.
-      config.cache_manifest = false
+      # Do not cache the manifest in testing or in development, only production.
+      config.cache_manifest = Hanami.env?(:production)
     end
 
     register "asset_mapper", asset_mapper

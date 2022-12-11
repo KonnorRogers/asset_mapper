@@ -1,6 +1,7 @@
+doctype html
 html
   head
     title Bookshelf
-    script name=asset_mapper.find("application.js")
+    script name=asset_path("application.js") type="module"
   body
     == yield
