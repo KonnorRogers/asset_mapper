@@ -6,7 +6,7 @@ Hanami.app.register_provider(:asset_mapper) do
   end
 
   start do
-    asset_mapper = AssetMapper.configure do |config|
+    asset_mapper = AssetMapper.new.configure do |config|
       # Where the manifest files can be found on the host machine
       config.manifest_files = ["public/esbuild-builds/asset-mapper-manifest.json"]
 

@@ -10,12 +10,13 @@ class AssetMapperTest < Minitest::Test
   def test_it_should_be_configurable
     cache_manifest = true
     manifest_files = %w[public/manifest.json]
-    AssetMapper.configure do |config|
+
+    asset_mapper = AssetMapper.new.configure do |config|
       config.manifest_files = manifest_files
       config.cache_manifest = cache_manifest
     end
 
-    assert_equal AssetMapper.config.manifest_files, manifest_files
-    assert_equal AssetMapper.config.cache_manifest, cache_manifest
+    assert_equal asset_mapper.config.manifest_files, manifest_files
+    assert_equal asset_mapper.config.cache_manifest, cache_manifest
   end
 end

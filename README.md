@@ -39,7 +39,9 @@ more than I would like it to. It does things like:
 
 ## Roadmap
 
-- [ ] - Create a plugin for ESBuild.
+- [ ] - Create a file hasher for bundle-less setups.
+- [ ] - Create a file watcher for development to auto-update the manifest.
+- [x] - Create a plugin for ESBuild.
 - [ ] - Create a plugin for Parcel 2.
 - [ ] - Create a plugin for Vite.
 - [ ] - Create a pluggable DevServer thats Rack compatible that can be injected as middleware.
@@ -64,15 +66,18 @@ Example:
 
 ```json
 {
-  "/path/before/asset-1.js": "path/after/asset-1.js"
-  "/path/before/asset-2.js": "path/after/asset-2.js"
+  "files": {
+    "/path/before/asset-1.js": "path/after/asset-1.js"
+    "/path/before/asset-2.js": "path/after/asset-2.js"
+  }
 }
 ```
 
 ## Programmatic Usage
 
 ```rb
-AssetMapper.configure do |config|
+# Create an AssetMapper::Configuration instance
+asset_mapper = AssetMapper.new.configure do |config|
   # Where the manifest files can be found on the host machine
   config.manifest_files = ["public/builds/asset-mapper-manifest.json"]
 
@@ -83,11 +88,13 @@ AssetMapper.configure do |config|
   config.cache_manifest = !(Rails.env.development? || Rails.env.testing?)
 end
 
-manifest = AssetMapper.manifest
+manifest = asset_mapper.manifest
 # =>
 #   {
-#     "entrypoints/application.js" => "entrypoints/application-[hash].js"
-#     "assets/icon.svg" => "assets/icon-[hash].svg"
+#     "files": {
+#       "entrypoints/application.js" => "entrypoints/application-[hash].js",
+#       "assets/icon.svg" => "assets/icon-[hash].svg"
+#     }
 #   }
 
 manifest.find("entrypoints/application.js")
@@ -99,10 +106,121 @@ manifest.find("assets/icon.svg")
 
 ## Supported bundlers
 
-- [ESBuild](/docs/esbuild)
-- [Parcel](/docs/parcel2)
-- [Rollup](/docs/rollup)
-- [Vite](/docs/vite/)
+- [x] [ESBuild](/docs/esbuild)
+- [ ] [Parcel 2](/docs/parcel2)
+- [ ] [Rollup](/docs/rollup)
+- [ ] [Vite](/docs/vite/)
+
+## Rails usage
+
+Create an initializer to initialize AssetMapper at `config/initializers/asset_mapper.rb`.
+
+```rb
+# config/initializers/asset_mapper.rb
+
+asset_mapper = AssetMapper.new.configure do |config|
+  # Where the manifest files can be found on the host machine
+  config.manifest_files = ["public/esbuild-builds/asset-mapper-manifest.json"]
+  config.asset_host = "/builds"
+
+  # Do not cache the manifest in testing or in development.
+  config.cache_manifest = !(Rails.env.development? || Rails.env.testing?)
+end
+
+Rails.application.config.asset_mapper = asset_mapper
+```
+
+AssetMapper is now available under: `Rails.application.config.asset_mapper`. This is pretty
+verbose to use in your views you can create a helper for it.
+
+### Usage in Rails views
+
+```rb
+# app/helpers/application_helper.rb
+module ApplicationHelper
+  def asset_mapper
+    Rails.application.config.asset_mapper
+  end
+end
+```
+
+## Hanami setup
+
+The first step is to create a "provider" for asset_mapper.
+
+```rb
+# config/providers/asset_mapper.rb
+
+Hanami.app.register_provider(:asset_mapper) do
+  prepare do
+    require "asset_mapper"
+  end
+
+  start do
+    asset_mapper = AssetMapper.new.configure do |config|
+      # Where the manifest files can be found on the host machine
+      config.manifest_files = ["public/esbuild-builds/asset-mapper-manifest.json"]
+
+      # The URL or path prefix for the files.
+      config.asset_host = "/esbuild-builds"
+
+      # Do not cache the manifest in testing or in development, only production.
+      config.cache_manifest = Hanami.env?(:production)
+    end
+
+    register "asset_mapper", asset_mapper
+  end
+end
+```
+
+### Add a static rack server
+
+Next, we need to add a setting to `./config.ru` for when we write to the `public/` folder.
+
+```rb
+# config.ru
+
+
+require "hanami/boot"
+
+run Hanami.app
+
+#### Everything above here is provided by default
+
+#### Add the below call
+use Rack::Static, :urls => [""], :root => "public", cascade: true
+```
+
+Finally, to use in your views, do the following:
+
+```rb
+# app/context.rb
+module Main # <- Replace this with your slice or application name
+  class Context < Hanami::View::Context
+    include Deps["asset_mapper"]
+
+    def asset_path(asset_name)
+      asset_mapper.find(asset_name)
+    end
+  end
+end
+
+# app/view.rb
+module Main # <- Replace this with your slice or application name
+  class View < Hanami::View
+    config.default_context = Context.new
+  end
+end
+
+# app/views/application.html.slim
+html
+  head
+    title Bookshelf
+    script name=asset_path("application.js")
+  body
+    == yield
+```
+
 
 ## Development
 

@@ -7,13 +7,17 @@ import fsLib from "fs";
 const fs = fsLib.promises;
 
 /**
- * @param {{ outputRoot?: string, entrypointRoot?: string }} [options={}] Plugin options.
+ * @param {{ outputRoot?: string, entrypointRoot?: string, manifestFile?: string }} [options={}] Plugin options.
  * @return {import("esbuild").Plugin}
  */
 export default function AssetMapperPlugin(options = {}) {
   if (options == null) options = {};
 
-  let { outputRoot, entrypointRoot = "app/javascript" } = options;
+  let {
+    outputRoot,
+    entrypointRoot = "app/javascript",
+    manifestFile = ""
+  } = options;
 
   return {
     name: "asset-mapper-manifest",
@@ -69,18 +73,20 @@ export default function AssetMapperPlugin(options = {}) {
           return;
         }
 
+        const outfileDir = build.initialOptions.outfile
+          ? build.initialOptions.outfile
+          : null;
+
+        const outdir =
+          build.initialOptions.outdir || outfileDir || process.cwd();
+
   		  if (!outputRoot) {
-  			  outputRoot = path.relative(process.cwd(), build.initialOptions.outdir || "")
+  			  outputRoot = path.relative(process.cwd(), outdir)
   		  }
 
         /** @type Map<string, string> */
         const manifest = new Map();
 
-        const outfileDir = build.initialOptions.outfile
-          ? build.initialOptions.outfile
-          : null;
-        const outdir =
-          build.initialOptions.outdir || outfileDir || process.cwd();
 
         // Let's loop through all the various outputs
         for (const hashedPath in result.metafile.outputs) {
@@ -136,11 +142,19 @@ export default function AssetMapperPlugin(options = {}) {
           );
         }
 
-        const manifestFolder = path.resolve(outdir);
+
+        if (!manifestFile) {
+          manifestFile = path.join(outputRoot, "asset-mapper-manifest.json")
+        }
+
+        const manifestFolder = path.dirname(manifestFile);
         await fs.mkdir(manifestFolder, { recursive: true });
+
         await fs.writeFile(
-          path.join(manifestFolder, "asset-mapper-manifest.json"),
-          JSON.stringify(Object.fromEntries(manifest), null, 2)
+          manifestFile,
+          JSON.stringify({
+            files: Object.fromEntries(manifest)
+          }, null, 2)
         );
       });
     },

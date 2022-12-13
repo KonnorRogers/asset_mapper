@@ -4,5 +4,10 @@
 An SVG should load under here if its working properly!
 
 <div style="display: flex; max-width: 24px; max-height: 24px;">
-  <%= File.read(Rails.root.join("public/esbuild-builds", AssetMapper.find("assets/academic-cap.svg", prepend_asset_host: false))).html_safe %>
+  <%= File.read(
+    Rails.root.join(
+      "public/esbuild-builds",
+      asset_mapper.find("assets/academic-cap.svg", prepend_asset_host: false)
+    )
+  ).html_safe %>
 </div>

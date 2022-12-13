@@ -6,6 +6,7 @@ module AssetMapper
   class Manifest
     extend Dry::Initializer
 
+    # @return [AssetMapper::Configuration]
     param :config
 
     class FileNotFoundError < StandardError; end
@@ -15,7 +16,7 @@ module AssetMapper
     # @param {Boolean} prepend_asset_host - Whether or not to add the asset_host. Usually "/"
     # @return {String}
     def find(file_name, prepend_asset_host: true)
-      file = manifest[file_name]
+      file = manifest["files"][file_name]
 
       if file.nil?
         raise FileNotFoundError("Unable to find #{filename} in your manifest[s].") if config.raise_on_missing_file
