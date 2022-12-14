@@ -54,21 +54,11 @@ here is the JSON schema expected:
 
 ### Schema
 
-The schema is super simple. It just path before transform, and path after transform.
-
 ```json
 {
-  "<unhashed-path>": "<hashed-path>"
-}
-```
-
-Example:
-
-```json
-{
-  "files": {
-    "/path/before/asset-1.js": "path/after/asset-1.js"
-    "/path/before/asset-2.js": "path/after/asset-2.js"
+  "<unhashed-path>": {
+    "asset_path": "<shortened-hashed-path>"
+    "file_path": "<full-hashed-path>"
   }
 }
 ```
@@ -92,8 +82,10 @@ manifest = asset_mapper.manifest
 # =>
 #   {
 #     "files": {
-#       "entrypoints/application.js" => "entrypoints/application-[hash].js",
-#       "assets/icon.svg" => "assets/icon-[hash].svg"
+#       "entrypoints/application.js" => {
+#          "asset_path" => "entrypoints/application-[hash].js",
+#          "file_path" => "public/assets/entrypoints/application-[hash].js",
+#       }
 #     }
 #   }
 
