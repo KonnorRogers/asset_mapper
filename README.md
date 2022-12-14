@@ -216,7 +216,7 @@ end
 html
   head
     title Bookshelf
-    script name=asset_path("application.js")
+    script src=asset_path("application.js") type="module"
   body
     == yield
 ```

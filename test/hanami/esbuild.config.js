@@ -7,13 +7,13 @@ const esbuild = require("esbuild");
 const fs = require("fs")
 const glob = require("glob")
 
-const outdir = path.join(process.cwd(), "public/esbuild-builds")
-const entrypointRoot = path.join(process.cwd(), "app", "assets", "javascript", "entrypoints")
+const outdir = path.join(process.cwd(), "public", "assets")
+const entrypointRoot = path.join(process.cwd(), "app", "assets")
 
 /** @type {Record<string, string>} */
 const entryPoints = {}
 
-glob.sync(`${entrypointRoot}/**/*.{js,ts}`).forEach((file) => {
+glob.sync(`${entrypointRoot}/javascript/entrypoints/**/*.{js,ts}`).forEach((file) => {
   const { dir, base } = path.parse(path.relative(entrypointRoot, file))
   // strip the ".js" extension for keys.
   const key = path.join(dir, base)
@@ -25,9 +25,6 @@ glob.sync(`${entrypointRoot}/**/*.{js,ts}`).forEach((file) => {
   /** @type {import("esbuild").BuildResult}  */
   await esbuild.build({
     entryPoints,
-    // entryPoints: {
-    //   application: path.join(entrypointRoot, "application.js")
-    // },
     format: "esm",
     splitting: true,
     bundle: true,
@@ -35,6 +32,7 @@ glob.sync(`${entrypointRoot}/**/*.{js,ts}`).forEach((file) => {
     outdir,
     plugins: [AssetMapperManifest({
       entrypointRoot,
+      manifestFile: path.join(process.cwd(), "public", "assets", "esbuild-manifest.json"),
       outputRoot: outdir
     })],
   });

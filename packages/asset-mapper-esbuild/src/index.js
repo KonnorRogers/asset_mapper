@@ -7,6 +7,12 @@ import fsLib from "fs";
 const fs = fsLib.promises;
 
 /**
+ * @typedef {Object} ManifestData
+ * @property {string} asset_path
+ * @property {string} file_path
+ */
+
+/**
  * @param {{ outputRoot?: string, entrypointRoot?: string, manifestFile?: string }} [options={}] Plugin options.
  * @return {import("esbuild").Plugin}
  */
@@ -15,8 +21,8 @@ export default function AssetMapperPlugin(options = {}) {
 
   let {
     outputRoot,
-    entrypointRoot = "app/javascript",
-    manifestFile = ""
+    entrypointRoot,
+    manifestFile
   } = options;
 
   return {
@@ -80,15 +86,25 @@ export default function AssetMapperPlugin(options = {}) {
         const outdir =
           build.initialOptions.outdir || outfileDir || process.cwd();
 
-  		  if (!outputRoot) {
+  		  if (outputRoot == null) {
   			  outputRoot = path.relative(process.cwd(), outdir)
+  			  console.warn(`No {outputRoot} defined. Using: ${outputRoot}`)
   		  }
 
-        /** @type Map<string, string> */
+  		  if (entrypointRoot == null) {
+  		    entrypointRoot = process.cwd()
+  		    console.warn(`
+            No {entrypointRoot} defined. Using: ${entrypointRoot}
+            In Rails, typically the {entrypointRoot} is "app/javascript/"
+          `)
+  		  }
+
+        /** @type Map<string, ManifestData> */
         const manifest = new Map();
 
 
         // Let's loop through all the various outputs
+        // I feel like this may not be needed with AssetMapper shipping its own file manifest creator.
         for (const hashedPath in result.metafile.outputs) {
           const output = result.metafile.outputs[hashedPath];
 
@@ -129,7 +145,10 @@ export default function AssetMapperPlugin(options = {}) {
           // Replace the relative paths. We don't need "/public" or "app/javascript"
           manifest.set(
             path.relative(entrypointRoot, entryPoint),
-            path.relative(outputRoot, finalPath)
+            {
+              asset_path: path.relative(outputRoot, finalPath),
+              file_path: finalPath
+            }
           );
 
           if (!output.cssBundle) continue;
@@ -138,7 +157,10 @@ export default function AssetMapperPlugin(options = {}) {
           const cssBundle = path.join(dir, name + ".css");
           manifest.set(
             path.relative(entrypointRoot, cssBundle),
-            path.relative(outputRoot, output.cssBundle)
+            {
+              asset_path: path.relative(outputRoot, output.cssBundle),
+              file_path: output.cssBundle
+            }
           );
         }
 

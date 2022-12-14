@@ -6,6 +6,7 @@ const process = require("process");
 const esbuild = require("esbuild");
 const fs = require("fs")
 
+const entrypointRoot = path.join(process.cwd(), "app", "javascript")
 const outdir = path.join(process.cwd(), "public/esbuild-builds")
 
 ;(async () => {
@@ -21,6 +22,11 @@ const outdir = path.join(process.cwd(), "public/esbuild-builds")
     bundle: true,
     sourcemap: true,
     outdir,
-    plugins: [AssetMapperManifest()],
+    plugins: [
+      AssetMapperManifest({
+        entrypointRoot,
+        outputRoot: outdir
+      })
+    ],
   });
 })();

@@ -16,7 +16,7 @@ module AssetMapper
     # @param {Boolean} prepend_asset_host - Whether or not to add the asset_host. Usually "/"
     # @return {String}
     def find(file_name, prepend_asset_host: true)
-      file = manifest["files"][file_name]
+      file = manifest_files[file_name]
 
       if file.nil?
         raise FileNotFoundError("Unable to find #{filename} in your manifest[s].") if config.raise_on_missing_file
@@ -25,23 +25,23 @@ module AssetMapper
         file = file_name
       end
 
-      return with_asset_host(asset_host: config.asset_host, file: file) if prepend_asset_host
+      return with_asset_host(asset_host: config.asset_host, file: file["asset_path"]) if prepend_asset_host
 
       file
     end
 
     # Returns a cached copy of the manifest only if cache_manifest is true.
-    def manifest
+    def manifest_files
       # Always reload the manifest. Useful for development / testing.
-      return load_manifest if config.cache_manifest == false
+      return load_manifest_files if config.cache_manifest == false
 
-      @manifest ||= load_manifest
+      @manifest_files ||= load_manifest_files
     end
 
     # Refreshes the cached mappings by reading the updated manifest files.
     #   Usually used for things like auto-building.
-    def refresh
-      @manifest = load_manifest
+    def refresh_files
+      @manifest_files = load_manifest_files
     end
 
     private
@@ -55,10 +55,18 @@ module AssetMapper
       asset_host + file
     end
 
-    def load_manifest
+    def load_manifest_files
+      generate_manifest
+
       hash = {}
-      config.manifest_files.each { |path| hash.merge!(JSON.parse(Dry::Files.new.read(path))) }
+      config.manifest_files.each { |path| hash.merge!(JSON.parse(Dry::Files.new.read(path))["files"]) }
       hash
+    end
+
+    def generate_manifest
+      @manifest_generator ||= ManifestGenerator.new(config)
+
+      @manifest_generator.generate
     end
   end
 end
