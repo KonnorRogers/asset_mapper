@@ -25,7 +25,9 @@ module AssetMapper
         file = file_name
       end
 
-      return with_asset_host(asset_host: config.asset_host, file: file["asset_path"]) if prepend_asset_host
+      file = file["asset_path"]
+
+      return with_asset_host(asset_host: config.asset_host, file: file) if prepend_asset_host
 
       file
     end
