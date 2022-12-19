@@ -17,7 +17,7 @@ Hanami.app.register_provider(:asset_mapper) do
       # Do not cache the manifest in testing or in development, only production.
       config.cache_manifest = Hanami.env?(:production)
 
-      # A FileWatcher instance
+      # A Rake FileList
       config.asset_files = Rake::FileList.new(["app/assets/media/**/*.*"])
 
       # Where to dump the assets
