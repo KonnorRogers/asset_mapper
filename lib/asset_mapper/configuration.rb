@@ -30,7 +30,10 @@ module AssetMapper
     # Files for AssetMapper to watch for changes and generate hashes for.
     # Accepts glob patterns like Dir["*"].
     # @return [Array<String>]
-    setting :watch_files, default: []
+    setting :asset_files, default: []
+
+    # Override the default file watcher.
+    setting :file_watcher
 
     # Append hashes to the end of files.
     setting :fingerprint, default: true

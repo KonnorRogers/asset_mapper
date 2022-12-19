@@ -160,7 +160,7 @@ Hanami.app.register_provider(:asset_mapper) do
       config.cache_manifest = Hanami.env?(:production)
 
       # Files to watch
-      config.watch_files = Rake::FileList["app/assets/media/**/*.*"]
+      config.asset_files = ["app/assets/media/**/*.*"]
 
       # Where to dump the assets
       config.assets_output_path = files.join("public/assets")
