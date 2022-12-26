@@ -6,3 +6,28 @@ set -vx
 bundle install
 
 # Do any other automated setup that you need to do here
+
+# ESbuild plugin setup
+cd packages/asset-mapper-esbuild
+npx pnpm install
+npx pnpm build
+
+cd -
+
+# Rails setup
+cd test/rails/asset-mapper-app
+bundle install
+yarn install
+yarn run build
+
+cd -
+
+# Hanami setup
+cd test/hanami
+bundle install
+yarn install
+yarn run build
+
+cd -
+
+echo "Setup complete. Checkout 'test/rails/asset-mapper-app' or 'test/hanami for more!'"

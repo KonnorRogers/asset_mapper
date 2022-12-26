@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+watch_directories = %w[app config lib]
+
+watch_directories << "slices" if Dir.exist?("slices")
+
+group :server do
+  guard "puma", port: ENV.fetch("HANAMI_PORT", 2300) do
+    directories watch_directories
+  end
+end
