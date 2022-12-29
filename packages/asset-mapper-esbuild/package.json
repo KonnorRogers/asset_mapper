@@ -8,8 +8,16 @@
     "build": "node esbuild.config.js && tsc && tsc -p ./tsconfig-cjs.json",
     "tsc": "tsc"
   },
-  "keywords": [],
+  "keywords": ["asset_mapper", "esbuild"],
   "author": "Konnor Rogers",
+  "bugs": {
+    "url" : "https://github.com/konnorrogers/asset_mapper/issues",
+    "email" : "konnor5456@gmail.com"
+  },
+  "homepage": "https://github.com/konnorrogers/asset_mapper#readme",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^18.11.12",
