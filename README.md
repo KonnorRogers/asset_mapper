@@ -113,6 +113,8 @@ Create an initializer to initialize AssetMapper at `config/initializers/asset_ma
 asset_mapper = AssetMapper.new.configure do |config|
   # Where the manifest files can be found on the host machine
   config.manifest_files = ["public/esbuild-builds/asset-mapper-manifest.json"]
+
+  # prepends "/builds" to all URLs
   config.asset_host = "/builds"
 
   # Do not cache the manifest in testing or in development.
@@ -146,8 +148,6 @@ The first step is to create a "provider" for asset_mapper.
 Hanami.app.register_provider(:asset_mapper) do
   prepare do
     require "asset_mapper"
-    require "dry/files"
-    require "rake"
   end
 
   start do
@@ -191,7 +191,6 @@ Next, we need to add a setting to `./config.ru` for when we write to the `public
 ```rb
 # config.ru
 
-
 require "hanami/boot"
 
 run Hanami.app
@@ -223,15 +222,18 @@ module Main # <- Replace this with your slice or application name
   end
 end
 
-# app/views/application.html.slim
-html
-  head
-    title Bookshelf
-    script src=asset_path("javascript/entrypoints/application.js") type="module"
-  body
-    == yield
+```erb
+# app/views/application.erb
+<html>
+  <head>
+    <title>Bookshelf</title>
+    <script src="<%= asset_path("javascript/entrypoints/application.js") %>" type="module">
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>
 ```
-
 
 ## Development
 
