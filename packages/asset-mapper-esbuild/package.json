@@ -1,6 +1,6 @@
 {
   "name": "asset-mapper-esbuild",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manifest generator for ESBuild designed for use with AssetMapper.",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
