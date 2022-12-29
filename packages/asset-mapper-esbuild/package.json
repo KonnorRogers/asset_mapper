@@ -6,13 +6,22 @@
   "module": "dist/esm/index.js",
   "scripts": {
     "build": "node esbuild.config.js && tsc && tsc -p ./tsconfig-cjs.json",
+    "deploy": "pnpm build && standard-version --release-as",
+    "deploy:beta": "pnpm build && standard-version --prerelease beta",
+    "deploy:patch": "pnpm build && standard-version --release-as patch",
+    "deploy:minor": "pnpm build && standard-version --release-as minor",
+    "deploy:major": "pnpm build && standard-version --release-as major",
+    "push": "git push --follow-tags origin main && pnpm publish",
     "tsc": "tsc"
   },
-  "keywords": ["asset_mapper", "esbuild"],
+  "keywords": [
+    "asset_mapper",
+    "esbuild"
+  ],
   "author": "Konnor Rogers",
   "bugs": {
-    "url" : "https://github.com/konnorrogers/asset_mapper/issues",
-    "email" : "konnor5456@gmail.com"
+    "url": "https://github.com/konnorrogers/asset_mapper/issues",
+    "email": "konnor5456@gmail.com"
   },
   "homepage": "https://github.com/konnorrogers/asset_mapper#readme",
   "files": [
@@ -23,9 +32,10 @@
     "@types/node": "^18.11.12",
     "esbuild": "^0.16.4",
     "rimraf": "^3.0.2",
+    "standard-version": "^9.5.0",
     "typescript": "^4.9.4"
   },
   "peerDependencies": {
-    "esbuild": "^0.16.4"
+    "esbuild": ">= 0.14.0"
   }
 }
