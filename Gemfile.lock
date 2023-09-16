@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    asset_mapper (0.0.1)
+    asset_mapper (1.0.0)
       dry-configurable (~> 1.0)
       dry-files (~> 1.0)
       dry-initializer (~> 3.0)
@@ -13,7 +13,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    concurrent-ruby (1.1.10)
+    concurrent-ruby (1.2.2)
     dry-configurable (1.0.1)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
@@ -27,11 +27,11 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
-    dry-types (1.7.0)
+    dry-types (1.7.1)
       concurrent-ruby (~> 1.0)
-      dry-core (~> 1.0, < 2)
-      dry-inflector (~> 1.0, < 2)
-      dry-logic (>= 1.4, < 2)
+      dry-core (~> 1.0)
+      dry-inflector (~> 1.0)
+      dry-logic (~> 1.4)
       zeitwerk (~> 2.6)
     json (2.6.3)
     language_server-protocol (3.17.0.2)
@@ -64,10 +64,11 @@ GEM
       rubocop (= 1.39.0)
       rubocop-performance (= 1.15.1)
     unicode-display_width (2.3.0)
-    zeitwerk (2.6.6)
+    zeitwerk (2.6.11)
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-22
   x86_64-darwin-20
   x86_64-linux
 
