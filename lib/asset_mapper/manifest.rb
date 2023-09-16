@@ -23,9 +23,9 @@ module AssetMapper
 
         # Fall back to the default filename, perhaps it exists....
         file = file_name
+      else
+        file = file["asset_path"]
       end
-
-      file = file["asset_path"]
 
       return with_asset_host(asset_host: config.asset_host, file: file) if prepend_asset_host
 
