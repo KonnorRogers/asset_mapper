@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    asset_mapper (1.0.0)
+    asset_mapper (1.0.1)
       dry-configurable (~> 1.0)
       dry-files (~> 1.0)
       dry-initializer (~> 3.0)
